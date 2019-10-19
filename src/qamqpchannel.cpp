@@ -134,7 +134,7 @@ void QAmqpChannelPrivate::flow(bool active)
 //       care about flow control, preferring rather to use basic.qos
 void QAmqpChannelPrivate::flow(const QAmqpMethodFrame &frame)
 {
-    Q_UNUSED(frame);
+    Q_UNUSED(frame)
     qAmqpDebug("-> channel#flow( channel=%d, name=%s )", channelNumber, qPrintable(name));
 }
 

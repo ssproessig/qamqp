@@ -121,7 +121,7 @@ class InvalidAuthenticator : public QAmqpAuthenticator
 public:
     virtual QString type() const { return "CRAZYAUTH"; }
     virtual void write(QDataStream &out) {
-        Q_UNUSED(out);
+        Q_UNUSED(out)
     }
 };
 

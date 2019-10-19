@@ -123,7 +123,7 @@ bool QAmqpMessage::isDetached() const
 
 uint qHash(const QAmqpMessage &message, uint seed)
 {
-    Q_UNUSED(seed);
+    Q_UNUSED(seed)
     return qHash(message.deliveryTag()) ^
            qHash(message.isRedelivered()) ^
            qHash(message.exchangeName()) ^
