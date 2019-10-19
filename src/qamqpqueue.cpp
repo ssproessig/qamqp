@@ -14,6 +14,7 @@ using namespace QAMQP;
 
 QAmqpQueuePrivate::QAmqpQueuePrivate(QAmqpQueue *q)
     : QAmqpChannelPrivate(q),
+      options(0),
       delayedDeclare(false),
       declared(false),
       recievingMessage(false),

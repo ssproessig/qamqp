@@ -278,12 +278,17 @@ void QAmqpFrame::writeAmqpField(QDataStream &s, QAmqpMetaType::ValueType type, c
 //////////////////////////////////////////////////////////////////////////
 
 QAmqpContentFrame::QAmqpContentFrame()
-    : QAmqpFrame(QAmqpFrame::Header)
+    : QAmqpFrame(QAmqpFrame::Header),
+      methodClass_(0),
+      id_(0),
+      bodySize_(0)
 {
 }
 
 QAmqpContentFrame::QAmqpContentFrame(QAmqpFrame::MethodClass methodClass)
-    : QAmqpFrame(QAmqpFrame::Header)
+    : QAmqpFrame(QAmqpFrame::Header),
+      id_(0),
+      bodySize_(0)
 {
     methodClass_ = methodClass;
 }

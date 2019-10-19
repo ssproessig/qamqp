@@ -5,6 +5,7 @@
 
 QAmqpMessagePrivate::QAmqpMessagePrivate()
     : deliveryTag(0),
+      redelivered(false),
       leftSize(0)
 {
 }
