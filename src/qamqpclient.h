@@ -44,7 +44,7 @@ class QAMQP_EXPORT QAmqpClient : public QObject
     Q_PROPERTY(qint16 heartbeatDelay READ heartbeatDelay() WRITE setHeartbeatDelay)
 
 public:
-    explicit QAmqpClient(QObject *parent = 0);
+    explicit QAmqpClient(QObject *parent = Q_NULLPTR);
     ~QAmqpClient();
 
     // properties
@@ -123,7 +123,7 @@ public Q_SLOTS:
     void ignoreSslErrors(const QList<QSslError> &errors);
 
 protected:
-    QAmqpClient(QAmqpClientPrivate *dd, QObject *parent = 0);
+    QAmqpClient(QAmqpClientPrivate *dd, QObject *parent = Q_NULLPTR);
 
     Q_DISABLE_COPY(QAmqpClient)
     Q_DECLARE_PRIVATE(QAmqpClient)

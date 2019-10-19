@@ -23,7 +23,7 @@ QAmqpClientPrivate::QAmqpClientPrivate(QAmqpClient *q)
       timeout(0),
       connecting(false),
       useSsl(false),
-      socket(0),
+      socket(Q_NULLPTR),
       closed(false),
       connected(false),
       channelMax(0),

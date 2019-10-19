@@ -108,7 +108,7 @@ protected:
     virtual void channelClosed();
 
 private:
-    explicit QAmqpExchange(int channelNumber = -1, QAmqpClient *parent = 0);
+    explicit QAmqpExchange(int channelNumber = -1, QAmqpClient *parent = Q_NULLPTR);
 
     Q_DISABLE_COPY(QAmqpExchange)
     Q_DECLARE_PRIVATE(QAmqpExchange)

@@ -233,7 +233,7 @@ void tst_QAMQPClient::validateUri()
     QFETCH(quint16, expectedPort);
     QFETCH(QString, expectedVirtualHost);
 
-    QAmqpClientPrivate clientPrivate(0);
+    QAmqpClientPrivate clientPrivate(Q_NULLPTR);
     // fake init
     clientPrivate.authenticator = QSharedPointer<QAmqpAuthenticator>(
         new QAmqpPlainAuthenticator(QString::fromLatin1(AMQP_LOGIN), QString::fromLatin1(AMQP_PSWD)));
