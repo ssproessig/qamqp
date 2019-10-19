@@ -153,18 +153,21 @@ private:
 class QAmqpMethodFrameHandler
 {
 public:
+    virtual ~QAmqpMethodFrameHandler() = default;
     virtual bool _q_method(const QAmqpMethodFrame &frame) = 0;
 };
 
 class QAmqpContentFrameHandler
 {
 public:
+    virtual ~QAmqpContentFrameHandler() = default;
     virtual void _q_content(const QAmqpContentFrame &frame) = 0;
 };
 
 class QAmqpContentBodyFrameHandler
 {
 public:
+    virtual ~QAmqpContentBodyFrameHandler() = default;
     virtual void _q_body(const QAmqpContentBodyFrame &frame) = 0;
 };
 
