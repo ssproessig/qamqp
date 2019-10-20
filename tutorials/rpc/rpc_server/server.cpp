@@ -6,9 +6,9 @@
 
 Server::Server(QObject *parent)
     : QObject(parent),
-      m_client(0),
-      m_rpcQueue(0),
-      m_defaultExchange(0)
+      m_client(Q_NULLPTR),
+      m_rpcQueue(Q_NULLPTR),
+      m_defaultExchange(Q_NULLPTR)
 {
     m_client = new QAmqpClient(this);
     connect(m_client, SIGNAL(connected()), this, SLOT(clientConnected()));

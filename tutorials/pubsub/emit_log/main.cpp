@@ -10,7 +10,7 @@ class LogEmitter : public QObject
 {
     Q_OBJECT
 public:
-    LogEmitter(QObject *parent = 0) : QObject(parent) {}
+    LogEmitter(QObject *parent = Q_NULLPTR) : QObject(parent) {}
 
 public Q_SLOTS:
     void start() {

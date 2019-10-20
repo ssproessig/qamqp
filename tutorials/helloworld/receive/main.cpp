@@ -9,7 +9,7 @@ class Receiver : public QObject
 {
     Q_OBJECT
 public:
-    Receiver(QObject *parent = 0) : QObject(parent) {
+    Receiver(QObject *parent = Q_NULLPTR) : QObject(parent) {
       m_client.setAutoReconnect(true);
     }
 

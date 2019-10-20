@@ -10,7 +10,7 @@ class TopicLogReceiver : public QObject
 {
     Q_OBJECT
 public:
-    TopicLogReceiver(QObject *parent = 0) : QObject(parent) {}
+    TopicLogReceiver(QObject *parent = Q_NULLPTR) : QObject(parent) {}
 
 public Q_SLOTS:
     void start(const QStringList &bindingKeys) {

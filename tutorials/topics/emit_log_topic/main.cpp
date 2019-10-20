@@ -10,7 +10,7 @@ class TopicLogEmitter : public QObject
 {
     Q_OBJECT
 public:
-    TopicLogEmitter(QObject *parent = 0) : QObject(parent) {}
+    TopicLogEmitter(QObject *parent = Q_NULLPTR) : QObject(parent) {}
 
 public Q_SLOTS:
     void start() {

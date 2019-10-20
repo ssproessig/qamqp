@@ -10,7 +10,7 @@ class Sender : public QObject
 {
     Q_OBJECT
 public:
-    Sender(QObject *parent = 0) : QObject(parent) {}
+    Sender(QObject *parent = Q_NULLPTR) : QObject(parent) {}
 
 public Q_SLOTS:
     void start() {

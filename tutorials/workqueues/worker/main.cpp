@@ -9,7 +9,7 @@ class Worker : public QObject
 {
     Q_OBJECT
 public:
-    Worker(QObject *parent = 0) : QObject(parent), m_queue(0) {}
+    Worker(QObject *parent = Q_NULLPTR) : QObject(parent), m_queue(Q_NULLPTR) {}
 
 public Q_SLOTS:
     void start() {

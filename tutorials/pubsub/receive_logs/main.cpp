@@ -10,7 +10,7 @@ class LogReceiver : public QObject
 {
     Q_OBJECT
 public:
-    LogReceiver(QObject *parent = 0) : QObject(parent) {}
+    LogReceiver(QObject *parent = Q_NULLPTR) : QObject(parent) {}
 
 public Q_SLOTS:
     void start() {
