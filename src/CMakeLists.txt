@@ -7,7 +7,7 @@ source_group("${LIB_NAME} Sources" ${HDR} ${SRC})
 
 _add_vcs_info_to_file(qamqpclient.cpp)
 
-set(LNK Qt5::Core Qt5::Network)
+set(LNK Qt6::Core Qt6::Network)
 
 add_library(${LIB_NAME}-static ${HDR} ${SRC})
 target_link_libraries(${LIB_NAME}-static ${LNK})

@@ -16,7 +16,7 @@ function(add_tutorial)
             ${QAMQP_PATH}/src
             ${QAMQP_PATH}/tests/common
     )
-    target_link_libraries(${ADD_TUTORIAL_PREFIX_NAME} qamqp-lib-static Qt5::Core Qt5::Network)
+    target_link_libraries(${ADD_TUTORIAL_PREFIX_NAME} qamqp-lib-static Qt6::Core Qt6::Network)
 
 endfunction()
 

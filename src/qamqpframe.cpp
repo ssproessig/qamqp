@@ -1,6 +1,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QDebug>
+#include <QIODevice>
 
 #include "qamqptable.h"
 #include "qamqpglobal.h"
@@ -73,9 +74,9 @@ QDataStream &operator<<(QDataStream &stream, const QAmqpFrame &frame)
 
     // write end
     stream << qint8(QAmqpFrame::FRAME_END);
-    
+
     int writeTimeout = QAmqpFrame::writeTimeout();
-    if(writeTimeout >= -1)
+    if (writeTimeout >= -1)
     {
         stream.device()->waitForBytesWritten(writeTimeout);
     }
@@ -153,7 +154,8 @@ void QAmqpMethodFrame::writePayload(QDataStream &stream) const
 
 QVariant QAmqpFrame::readAmqpField(QDataStream &s, QAmqpMetaType::ValueType type)
 {
-    switch (type) {
+    switch (type)
+    {
     case QAmqpMetaType::Boolean:
     {
         quint8 octet = 0;
@@ -180,7 +182,7 @@ QVariant QAmqpFrame::readAmqpField(QDataStream &s, QAmqpMetaType::ValueType type
     }
     case QAmqpMetaType::LongLongUint:
     {
-        qulonglong v = 0 ;
+        qulonglong v = 0;
         s >> v;
         return v;
     }
@@ -208,7 +210,7 @@ QVariant QAmqpFrame::readAmqpField(QDataStream &s, QAmqpMetaType::ValueType type
     {
         qulonglong tmp_value;
         s >> tmp_value;
-        return QDateTime::fromTime_t(tmp_value);
+        return QDateTime::fromSecsSinceEpoch(tmp_value);
     }
     case QAmqpMetaType::Hash:
     {
@@ -227,7 +229,8 @@ QVariant QAmqpFrame::readAmqpField(QDataStream &s, QAmqpMetaType::ValueType type
 
 void QAmqpFrame::writeAmqpField(QDataStream &s, QAmqpMetaType::ValueType type, const QVariant &value)
 {
-    switch (type) {
+    switch (type)
+    {
     case QAmqpMetaType::Boolean:
         s << (value.toBool() ? qint8(1) : qint8(0));
         break;
@@ -246,30 +249,31 @@ void QAmqpFrame::writeAmqpField(QDataStream &s, QAmqpMetaType::ValueType type, c
     case QAmqpMetaType::ShortString:
     {
         QString str = value.toString();
-        if (str.length() >= 256) {
+        if (str.length() >= 256)
+        {
             qAmqpDebug() << Q_FUNC_INFO << "invalid shortstr length: " << str.length();
         }
 
         s << quint8(str.length());
         s.writeRawData(str.toUtf8().data(), str.length());
     }
-        break;
+    break;
     case QAmqpMetaType::LongString:
     {
         QString str = value.toString();
         s << quint32(str.length());
         s.writeRawData(str.toLatin1().data(), str.length());
     }
-        break;
+    break;
     case QAmqpMetaType::Timestamp:
-        s << qulonglong(value.toDateTime().toTime_t());
+        s << qulonglong(value.toDateTime().toSecsSinceEpoch());
         break;
     case QAmqpMetaType::Hash:
     {
         QAmqpTable table(value.toHash());
         s << table;
     }
-        break;
+    break;
     default:
         qAmqpDebug() << Q_FUNC_INFO << "unsupported value type: " << type;
     }
@@ -298,7 +302,7 @@ qint32 QAmqpContentFrame::size() const
     QDataStream out(&buffer_, QIODevice::WriteOnly);
     buffer_.clear();
     out << qint16(methodClass_);
-    out << qint16(0); //weight
+    out << qint16(0); // weight
     out << qlonglong(bodySize_);
 
     qint16 prop_ = 0;
@@ -379,7 +383,7 @@ void QAmqpContentFrame::writePayload(QDataStream &out) const
 void QAmqpContentFrame::readPayload(QDataStream &in)
 {
     in >> methodClass_;
-    in.skipRawData(2); //weight
+    in.skipRawData(2); // weight
     in >> bodySize_;
     qint16 flags_ = 0;
     in >> flags_;

@@ -1,4 +1,4 @@
-set(LNK Qt5::Core Qt5::Network)
+set(LNK Qt6::Core Qt6::Network)
 
 add_qtest(NAME qamqpchannel SOURCES qamqpchannel/tst_qamqpchannel.cpp $<TARGET_OBJECTS:qamqp-lib-coverage> LIBS ${LNK})
 add_qtest(NAME qamqpclient SOURCES qamqpclient/certs.qrc qamqpclient/tst_qamqpclient.cpp $<TARGET_OBJECTS:qamqp-lib-coverage> LIBS ${LNK})

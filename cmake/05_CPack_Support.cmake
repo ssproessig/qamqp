@@ -17,7 +17,7 @@ message(STATUS "  this is version ${CPACK_PACKAGE_VERSION}.")
 
 # general package options
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Qt5 library implementation of AMQP 0.9.1, focusing on RabbitMQ")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Qt6 library implementation of AMQP 0.9.1, focusing on RabbitMQ")
 set(CPACK_PACKAGE_NAME "qamqp")
 set(CPACK_PACKAGE_VENDOR "Matt Broadstone and contributors")
 set(CPACK_PACKAGE_CONTACT mbroadst@gmail.com)

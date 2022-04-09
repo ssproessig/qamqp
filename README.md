@@ -3,14 +3,14 @@
 
 QAMQP
 =============
-A Qt4/Qt5 implementation of AMQP 0.9.1, focusing primarily on RabbitMQ support.
+A Qt4/Qt5/Qt6 implementation of AMQP 0.9.1, focusing primarily on RabbitMQ support.
 
 
 Building with CMake
 ------------
 - ensure you have the following packages on the `PATH`
     - **CMake** >= 3.12 
-    - **Qt** >= 5.9
+    - **Qt** >= 6.0
     - **lcov**
 
 - checkout sources

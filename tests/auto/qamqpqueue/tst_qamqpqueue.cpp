@@ -52,7 +52,6 @@ private Q_SLOTS:
 
 private:
     QScopedPointer<QAmqpClient> client;
-
 };
 
 void tst_QAMQPQueue::init()
@@ -64,7 +63,8 @@ void tst_QAMQPQueue::init()
 
 void tst_QAMQPQueue::cleanup()
 {
-    if (client->isConnected()) {
+    if (client->isConnected())
+    {
         client->disconnectFromHost();
         QVERIFY(waitForSignal(client.data(), SIGNAL(disconnected())));
     }
@@ -129,7 +129,7 @@ void tst_QAMQPQueue::invalidDeclaration_data()
     QTest::addColumn<QString>("queueName");
     QTest::addColumn<QAMQP::Error>("error");
 
-    QTest::newRow("amq.direct") << "amq.direct" <<  QAMQP::AccessRefusedError;
+    QTest::newRow("amq.direct") << "amq.direct" << QAMQP::AccessRefusedError;
     QTest::newRow("amq.fanout") << "amq.fanout" << QAMQP::AccessRefusedError;
     QTest::newRow("amq.headers") << "amq.headers" << QAMQP::AccessRefusedError;
     QTest::newRow("amq.match") << "amq.match" << QAMQP::AccessRefusedError;
@@ -219,7 +219,7 @@ void tst_QAMQPQueue::remove()
     QAmqpQueue *queue = client->createQueue("test-remove");
     queue->declare();
     QVERIFY(waitForSignal(queue, SIGNAL(declared())));
-    queue->remove(QAmqpQueue::roIfEmpty|QAmqpQueue::roIfUnused);
+    queue->remove(QAmqpQueue::roIfEmpty | QAmqpQueue::roIfUnused);
     QVERIFY(waitForSignal(queue, SIGNAL(removed())));
 }
 
@@ -422,15 +422,18 @@ void tst_QAMQPQueue::get()
 
     const int messageCount = 200;
     QAmqpExchange *defaultExchange = client->createExchange();
-    for (int i = 0; i < messageCount; ++i) {
+    for (int i = 0; i < messageCount; ++i)
+    {
         QString expected = QString("message %1").arg(i);
         defaultExchange->publish(expected, "test-get");
     }
 
-    for (int i = 0; i < messageCount; ++i) {
+    for (int i = 0; i < messageCount; ++i)
+    {
         QString expected = QString("message %1").arg(i);
         queue->get(false);
-        if (!waitForSignal(queue, SIGNAL(messageReceived()))) {
+        if (!waitForSignal(queue, SIGNAL(messageReceived())))
+        {
             // NOTE: this is here instead of waiting for messages to be
             //       available with a sleep above. It makes the test a little
             //       longer if there's a miss, look into a proper fix in the future
@@ -511,14 +514,16 @@ void tst_QAMQPQueue::qos()
     // load up the queue
     const int messageCount = 10;
     QAmqpExchange *defaultExchange = client->createExchange();
-    for (int i = 0; i < messageCount; ++i) {
+    for (int i = 0; i < messageCount; ++i)
+    {
         QString message = QString("message %1").arg(i);
         defaultExchange->publish(message, "test-qos");
     }
 
     QVERIFY(waitForSignal(queue, SIGNAL(messageReceived())));
     int messageReceivedCount = 0;
-    while (!queue->isEmpty()) {
+    while (!queue->isEmpty())
+    {
         QString expected = QString("message %1").arg(messageReceivedCount);
         QAmqpMessage message = queue->dequeue();
         verifyStandardMessageHeaders(message, "test-qos");
@@ -601,12 +606,13 @@ void tst_QAMQPQueue::tableFieldDataTypes()
     QCOMPARE(message.header("double").toDouble(), double(FLT_MAX));
     QCOMPARE(message.header("short-string").toString(), QLatin1String("test"));
     QCOMPARE(message.header("long-string").toString(), QLatin1String("test"));
-    QCOMPARE(message.header("timestamp").toDateTime().toTime_t(), timestamp.toTime_t());
+    QCOMPARE(message.header("timestamp").toDateTime().toSecsSinceEpoch(), timestamp.toSecsSinceEpoch());
     QCOMPARE(message.header("bytes").toByteArray(), QByteArray("abcdefg1234567"));
 
     QVERIFY(message.hasHeader("nested-table"));
     QAmqpTable compareTable(message.header("nested-table").toHash());
-    foreach (QString key, nestedTable.keys()) {
+    foreach (QString key, nestedTable.keys())
+    {
         QVERIFY(compareTable.contains(key));
         QCOMPARE(nestedTable.value(key), compareTable.value(key));
     }
@@ -654,7 +660,7 @@ void tst_QAMQPQueue::messageProperties()
     QCOMPARE(message.property(QAmqpMessage::ReplyTo).toString(), QLatin1String("another-queue"));
     QCOMPARE(message.property(QAmqpMessage::MessageId).toString(), QLatin1String("some-message-id"));
     QCOMPARE(message.property(QAmqpMessage::Expiration).toString(), QLatin1String("60000"));
-    QCOMPARE(message.property(QAmqpMessage::Timestamp).toDateTime().toTime_t(), timestamp.toTime_t());
+    QCOMPARE(message.property(QAmqpMessage::Timestamp).toDateTime().toSecsSinceEpoch(), timestamp.toSecsSinceEpoch());
     QCOMPARE(message.property(QAmqpMessage::Type).toString(), QLatin1String("some-message-type"));
     QCOMPARE(message.property(QAmqpMessage::UserId).toString(), QLatin1String("guest"));
     QCOMPARE(message.property(QAmqpMessage::AppId).toString(), QLatin1String("some-app-id"));

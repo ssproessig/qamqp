@@ -63,35 +63,40 @@ void QAmqpClientPrivate::initSocket()
     QObject::connect(socket, SIGNAL(disconnected()), q, SLOT(_q_socketDisconnected()));
     QObject::connect(socket, SIGNAL(readyRead()), q, SLOT(_q_readyRead()));
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-                          q, SLOT(_q_socketError(QAbstractSocket::SocketError)));
+                     q, SLOT(_q_socketError(QAbstractSocket::SocketError)));
     QObject::connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-                          q, SIGNAL(socketError(QAbstractSocket::SocketError)));
+                     q, SIGNAL(socketError(QAbstractSocket::SocketError)));
     QObject::connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-                          q, SIGNAL(socketStateChanged(QAbstractSocket::SocketState)));
+                     q, SIGNAL(socketStateChanged(QAbstractSocket::SocketState)));
     QObject::connect(socket, SIGNAL(sslErrors(QList<QSslError>)),
-                          q, SIGNAL(sslErrors(QList<QSslError>)));
+                     q, SIGNAL(sslErrors(QList<QSslError>)));
 }
 
 void QAmqpClientPrivate::resetChannelState()
 {
-    foreach (QString exchangeName, exchanges.channels()) {
-      QAmqpExchange *exchange =
-        qobject_cast<QAmqpExchange*>(exchanges.get(exchangeName));
-      if (exchange) exchange->d_ptr->resetInternalState();
+    foreach (QString exchangeName, exchanges.channels())
+    {
+        QAmqpExchange *exchange =
+            qobject_cast<QAmqpExchange *>(exchanges.get(exchangeName));
+        if (exchange)
+            exchange->d_ptr->resetInternalState();
     }
 
-    foreach (QString queueName, queues.channels()) {
-      QAmqpQueue *queue =
-        qobject_cast<QAmqpQueue*>(queues.get(queueName));
-      if (queue) queue->d_ptr->resetInternalState();
+    foreach (QString queueName, queues.channels())
+    {
+        QAmqpQueue *queue =
+            qobject_cast<QAmqpQueue *>(queues.get(queueName));
+        if (queue)
+            queue->d_ptr->resetInternalState();
     }
 }
 
 void QAmqpClientPrivate::setUsername(const QString &username)
 {
     QAmqpAuthenticator *auth = authenticator.data();
-    if (auth && auth->type() == QLatin1String("AMQPLAIN")) {
-        QAmqpPlainAuthenticator *a = static_cast<QAmqpPlainAuthenticator*>(auth);
+    if (auth && auth->type() == QLatin1String("AMQPLAIN"))
+    {
+        QAmqpPlainAuthenticator *a = static_cast<QAmqpPlainAuthenticator *>(auth);
         a->setLogin(username);
     }
 }
@@ -99,8 +104,9 @@ void QAmqpClientPrivate::setUsername(const QString &username)
 void QAmqpClientPrivate::setPassword(const QString &password)
 {
     QAmqpAuthenticator *auth = authenticator.data();
-    if (auth && auth->type() == QLatin1String("AMQPLAIN")) {
-        QAmqpPlainAuthenticator *a = static_cast<QAmqpPlainAuthenticator*>(auth);
+    if (auth && auth->type() == QLatin1String("AMQPLAIN"))
+    {
+        QAmqpPlainAuthenticator *a = static_cast<QAmqpPlainAuthenticator *>(auth);
         a->setPassword(password);
     }
 }
@@ -114,7 +120,8 @@ void QAmqpClientPrivate::parseConnectionString(const QString &uri)
 #endif
 
     if (connectionString.scheme() != AMQP_SCHEME &&
-        connectionString.scheme() != AMQP_SSL_SCHEME) {
+        connectionString.scheme() != AMQP_SSL_SCHEME)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "invalid scheme: " << connectionString.scheme();
         return;
     }
@@ -141,7 +148,8 @@ void QAmqpClientPrivate::_q_connect()
 {
     if (reconnectTimer)
         reconnectTimer->stop();
-    if (socket->state() != QAbstractSocket::UnconnectedState) {
+    if (socket->state() != QAbstractSocket::UnconnectedState)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "socket already connected, disconnecting..";
         _q_disconnect();
         // We need to explicitly close connection here because either way it will not be closed until we receive closeOk
@@ -159,7 +167,8 @@ void QAmqpClientPrivate::_q_disconnect()
 {
     if (reconnectTimer)
         reconnectTimer->stop();
-    if (socket->state() == QAbstractSocket::UnconnectedState) {
+    if (socket->state() == QAbstractSocket::UnconnectedState)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "already disconnected";
         return;
     }
@@ -173,7 +182,7 @@ void QAmqpClientPrivate::_q_socketConnected()
 {
     if (reconnectTimer)
         reconnectTimer->stop();
-    if(reconnectFixedTimeout == false)
+    if (reconnectFixedTimeout == false)
         timeout = 0;
     char header[8] = {'A', 'M', 'Q', 'P', 0, 0, 9, 1};
     socket->write(header, 8);
@@ -197,17 +206,21 @@ void QAmqpClientPrivate::_q_heartbeat()
 
 void QAmqpClientPrivate::_q_socketError(QAbstractSocket::SocketError error)
 {
-    if(reconnectFixedTimeout == false)
+    if (reconnectFixedTimeout == false)
     {
-        if (timeout <= 0) {
+        if (timeout <= 0)
+        {
             timeout = 1000;
-        } else {
+        }
+        else
+        {
             if (timeout < 120000)
                 timeout *= 5;
         }
     }
 
-    switch (error) {
+    switch (error)
+    {
     case QAbstractSocket::ConnectionRefusedError:
     case QAbstractSocket::RemoteHostClosedError:
     case QAbstractSocket::SocketTimeoutError:
@@ -225,13 +238,15 @@ void QAmqpClientPrivate::_q_socketError(QAbstractSocket::SocketError error)
     // and send no more data. only try to send the close message if we
     // are actively connected
     if (socket->state() == QAbstractSocket::ConnectedState ||
-        socket->state() == QAbstractSocket::ConnectingState) {
+        socket->state() == QAbstractSocket::ConnectingState)
+    {
         socket->abort();
     }
 
     errorString = socket->errorString();
 
-    if (autoReconnect && reconnectTimer) {
+    if (autoReconnect && reconnectTimer)
+    {
         qAmqpDebug() << "trying to reconnect after: " << timeout << "ms";
         reconnectTimer->start(timeout);
     }
@@ -240,10 +255,11 @@ void QAmqpClientPrivate::_q_socketError(QAbstractSocket::SocketError error)
 void QAmqpClientPrivate::_q_readyRead()
 {
     Q_Q(QAmqpClient);
-    
-    while (socket->bytesAvailable() >= QAmqpFrame::HEADER_SIZE) {
+
+    while (socket->bytesAvailable() >= QAmqpFrame::HEADER_SIZE)
+    {
         unsigned char headerData[QAmqpFrame::HEADER_SIZE];
-        socket->peek((char*)headerData, QAmqpFrame::HEADER_SIZE);
+        socket->peek((char *)headerData, QAmqpFrame::HEADER_SIZE);
         const quint32 payloadSize = qFromBigEndian<quint32>(headerData + 3);
         const qint64 readSize = QAmqpFrame::HEADER_SIZE + payloadSize + QAmqpFrame::FRAME_END_SIZE;
 
@@ -253,42 +269,51 @@ void QAmqpClientPrivate::_q_readyRead()
         buffer.resize(readSize);
         socket->read(buffer.data(), readSize);
         const char *bufferData = buffer.constData();
-        const quint8 type = *(quint8*)&bufferData[0];
-        const quint8 magic = *(quint8*)&bufferData[QAmqpFrame::HEADER_SIZE + payloadSize];
-        if (Q_UNLIKELY(magic != QAmqpFrame::FRAME_END)) {
+        const quint8 type = *(quint8 *)&bufferData[0];
+        const quint8 magic = *(quint8 *)&bufferData[QAmqpFrame::HEADER_SIZE + payloadSize];
+        if (Q_UNLIKELY(magic != QAmqpFrame::FRAME_END))
+        {
             close(QAMQP::UnexpectedFrameError, "wrong end of frame");
             return;
         }
 
         QDataStream streamB(&buffer, QIODevice::ReadOnly);
-        switch (static_cast<QAmqpFrame::FrameType>(type)) {
+        switch (static_cast<QAmqpFrame::FrameType>(type))
+        {
         case QAmqpFrame::Method:
         {
             QAmqpMethodFrame frame;
             streamB >> frame;
 
-            if (Q_UNLIKELY(frame.size() > frameMax)) {
+            if (Q_UNLIKELY(frame.size() > frameMax))
+            {
                 close(QAMQP::FrameError, "frame size too large");
                 return;
             }
 
-            if (frame.methodClass() == QAmqpFrame::Connection) {
+            if (frame.methodClass() == QAmqpFrame::Connection)
+            {
                 _q_method(frame);
-            } else {
+            }
+            else
+            {
                 foreach (QAmqpMethodFrameHandler *methodHandler, methodHandlersByChannel[frame.channel()])
                     methodHandler->_q_method(frame);
             }
         }
-            break;
+        break;
         case QAmqpFrame::Header:
         {
             QAmqpContentFrame frame;
             streamB >> frame;
 
-            if (Q_UNLIKELY(frame.size() > frameMax)) {
+            if (Q_UNLIKELY(frame.size() > frameMax))
+            {
                 close(QAMQP::FrameError, "frame size too large");
                 return;
-            } else if (Q_UNLIKELY(frame.channel() <= 0)) {
+            }
+            else if (Q_UNLIKELY(frame.channel() <= 0))
+            {
                 close(QAMQP::ChannelError, "channel number must be greater than zero");
                 return;
             }
@@ -296,16 +321,19 @@ void QAmqpClientPrivate::_q_readyRead()
             foreach (QAmqpContentFrameHandler *methodHandler, contentHandlerByChannel[frame.channel()])
                 methodHandler->_q_content(frame);
         }
-            break;
+        break;
         case QAmqpFrame::Body:
         {
             QAmqpContentBodyFrame frame;
             streamB >> frame;
 
-            if (Q_UNLIKELY(frame.size() > frameMax)) {
+            if (Q_UNLIKELY(frame.size() > frameMax))
+            {
                 close(QAMQP::FrameError, "frame size too large");
                 return;
-            } else if (Q_UNLIKELY(frame.channel() <= 0)) {
+            }
+            else if (Q_UNLIKELY(frame.channel() <= 0))
+            {
                 close(QAMQP::ChannelError, "channel number must be greater than zero");
                 return;
             }
@@ -313,13 +341,14 @@ void QAmqpClientPrivate::_q_readyRead()
             foreach (QAmqpContentBodyFrameHandler *methodHandler, bodyHandlersByChannel[frame.channel()])
                 methodHandler->_q_body(frame);
         }
-            break;
+        break;
         case QAmqpFrame::Heartbeat:
         {
             QAmqpMethodFrame frame;
             streamB >> frame;
 
-            if (Q_UNLIKELY(frame.channel() != 0)) {
+            if (Q_UNLIKELY(frame.channel() != 0))
+            {
                 close(QAMQP::FrameError, "heartbeat must have channel id zero");
                 return;
             }
@@ -327,7 +356,7 @@ void QAmqpClientPrivate::_q_readyRead()
             qAmqpDebug("AMQP: Heartbeat");
             Q_EMIT q->heartbeat();
         }
-            break;
+        break;
         default:
             qAmqpDebug() << "AMQP: Unknown frame type: " << type;
             close(QAMQP::FrameError, "invalid frame type");
@@ -338,7 +367,8 @@ void QAmqpClientPrivate::_q_readyRead()
 
 void QAmqpClientPrivate::sendFrame(const QAmqpFrame &frame)
 {
-    if (socket->state() != QAbstractSocket::ConnectedState) {
+    if (socket->state() != QAbstractSocket::ConnectedState)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "socket not connected: " << socket->state();
         return;
     }
@@ -365,13 +395,15 @@ bool QAmqpClientPrivate::_q_method(const QAmqpMethodFrame &frame)
     if (frame.methodClass() != QAmqpFrame::Connection)
         return false;
 
-    if (closed) {
+    if (closed)
+    {
         if (frame.id() == QAmqpClientPrivate::miCloseOk)
             closeOk(frame);
         return false;
     }
 
-    switch (QAmqpClientPrivate::MethodId(frame.id())) {
+    switch (QAmqpClientPrivate::MethodId(frame.id()))
+    {
     case QAmqpClientPrivate::miStart:
         start(frame);
         break;
@@ -414,9 +446,10 @@ void QAmqpClientPrivate::start(const QAmqpMethodFrame &frame)
     QString locales = QAmqpFrame::readAmqpField(stream, QAmqpMetaType::LongString).toString();
 
     qAmqpDebug("-> connection#start( version_major=%d, version_minor=%d, mechanisms=(%s), locales=%s )",
-           version_major, version_minor, qPrintable(mechanisms.join(",")), qPrintable(locales));
+               version_major, version_minor, qPrintable(mechanisms.join(",")), qPrintable(locales));
 
-    if (!mechanisms.contains(authenticator->type())) {
+    if (!mechanisms.contains(authenticator->type()))
+    {
         socket->disconnectFromHost();
         return;
     }
@@ -454,7 +487,8 @@ void QAmqpClientPrivate::tune(const QAmqpMethodFrame &frame)
     qAmqpDebug("-> connection#tune( channel_max=%d, frame_max=%d, heartbeat=%d )",
                channelMax, frameMax, heartbeatDelay);
 
-    if (heartbeatTimer) {
+    if (heartbeatTimer)
+    {
         heartbeatTimer->setInterval(heartbeatDelay * 1000);
         if (heartbeatTimer->interval())
             heartbeatTimer->start();
@@ -497,20 +531,23 @@ void QAmqpClientPrivate::close(const QAmqpMethodFrame &frame)
                code, qPrintable(text), classId, methodId);
 
     QAMQP::Error checkError = static_cast<QAMQP::Error>(code);
-    if (checkError != QAMQP::NoError) {
+    if (checkError != QAMQP::NoError)
+    {
         error = checkError;
         errorString = qPrintable(text);
         Q_EMIT q->error(error);
 
         // if it was a force disconnect, simulate receiving a closeOk
-        if (checkError == QAMQP::ConnectionForcedError) {
-          closeConnection();
-          if (autoReconnect) {
-            qAmqpDebug() << "trying to reconnect after: " << timeout << "ms";
-            QTimer::singleShot(timeout, q, SLOT(_q_connect()));
-          }
+        if (checkError == QAMQP::ConnectionForcedError)
+        {
+            closeConnection();
+            if (autoReconnect)
+            {
+                qAmqpDebug() << "trying to reconnect after: " << timeout << "ms";
+                QTimer::singleShot(timeout, q, SLOT(_q_connect()));
+            }
 
-          return;
+            return;
         }
     }
 
@@ -534,14 +571,15 @@ void QAmqpClientPrivate::startOk()
     clientProperties["version"] = QString(QAMQP_VERSION);
     clientProperties["platform"] = QString("Qt %1").arg(qVersion());
     clientProperties["product"] = QString("QAMQP");
-    clientProperties.unite(customProperties);
+    // clientProperties.unite(customProperties);
+    clientProperties.insert(customProperties);
     stream << clientProperties;
 
     authenticator->write(stream);
     QAmqpFrame::writeAmqpField(stream, QAmqpMetaType::ShortString, QLatin1String("en_US"));
     frame.setArguments(arguments);
 
-    qAmqpDebug("<- connection#startOk()");  // @todo: fill this out
+    qAmqpDebug("<- connection#startOk()"); // @todo: fill this out
     sendFrame(frame);
 }
 
@@ -671,8 +709,9 @@ QString QAmqpClient::username() const
 {
     Q_D(const QAmqpClient);
     const QAmqpAuthenticator *auth = d->authenticator.data();
-    if (auth && auth->type() == QLatin1String("AMQPLAIN")) {
-        const QAmqpPlainAuthenticator *a = static_cast<const QAmqpPlainAuthenticator*>(auth);
+    if (auth && auth->type() == QLatin1String("AMQPLAIN"))
+    {
+        const QAmqpPlainAuthenticator *a = static_cast<const QAmqpPlainAuthenticator *>(auth);
         return a->login();
     }
 
@@ -689,8 +728,9 @@ QString QAmqpClient::password() const
 {
     Q_D(const QAmqpClient);
     const QAmqpAuthenticator *auth = d->authenticator.data();
-    if (auth && auth->type() == QLatin1String("AMQPLAIN")) {
-        const QAmqpPlainAuthenticator *a = static_cast<const QAmqpPlainAuthenticator*>(auth);
+    if (auth && auth->type() == QLatin1String("AMQPLAIN"))
+    {
+        const QAmqpPlainAuthenticator *a = static_cast<const QAmqpPlainAuthenticator *>(auth);
         return a->password();
     }
 
@@ -712,8 +752,9 @@ QAmqpExchange *QAmqpClient::createExchange(const QString &name, int channelNumbe
 {
     Q_D(QAmqpClient);
     QAmqpExchange *exchange;
-    if (d->exchanges.contains(name)) {
-        exchange = qobject_cast<QAmqpExchange*>(d->exchanges.get(name));
+    if (d->exchanges.contains(name))
+    {
+        exchange = qobject_cast<QAmqpExchange *>(d->exchanges.get(name));
         if (exchange)
             return exchange;
     }
@@ -739,8 +780,9 @@ QAmqpQueue *QAmqpClient::createQueue(const QString &name, int channelNumber)
 {
     Q_D(QAmqpClient);
     QAmqpQueue *queue;
-    if (d->queues.contains(name)) {
-        queue = qobject_cast<QAmqpQueue*>(d->queues.get(name));
+    if (d->queues.contains(name))
+    {
+        queue = qobject_cast<QAmqpQueue *>(d->queues.get(name));
         if (queue)
             return queue;
     }
@@ -782,7 +824,7 @@ void QAmqpClient::setAutoReconnect(bool value, int timeout)
     Q_D(QAmqpClient);
     d->autoReconnect = value;
 
-    if((value == true) && (timeout > 0))
+    if ((value == true) && (timeout > 0))
     {
         d->timeout = timeout;
         d->reconnectFixedTimeout = true;
@@ -803,7 +845,8 @@ qint16 QAmqpClient::channelMax() const
 void QAmqpClient::setChannelMax(qint16 channelMax)
 {
     Q_D(QAmqpClient);
-    if (d->connected) {
+    if (d->connected)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "can't modify value while connected";
         return;
     }
@@ -820,7 +863,8 @@ qint32 QAmqpClient::frameMax() const
 void QAmqpClient::setFrameMax(qint32 frameMax)
 {
     Q_D(QAmqpClient);
-    if (d->connected) {
+    if (d->connected)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "can't modify value while connected";
         return;
     }
@@ -837,7 +881,8 @@ qint16 QAmqpClient::heartbeatDelay() const
 void QAmqpClient::setHeartbeatDelay(qint16 delay)
 {
     Q_D(QAmqpClient);
-    if (d->connected) {
+    if (d->connected)
+    {
         qAmqpDebug() << Q_FUNC_INFO << "can't modify value while connected";
         return;
     }
@@ -900,7 +945,8 @@ QSslConfiguration QAmqpClient::sslConfiguration() const
 void QAmqpClient::setSslConfiguration(const QSslConfiguration &config)
 {
     Q_D(QAmqpClient);
-    if (!config.isNull()) {
+    if (!config.isNull())
+    {
         d->useSsl = true;
         d->port = AMQP_SSL_PORT;
         d->socket->setSslConfiguration(config);
@@ -921,7 +967,8 @@ void QAmqpClient::ignoreSslErrors(const QList<QSslError> &errors)
 void QAmqpClient::connectToHost(const QString &uri)
 {
     Q_D(QAmqpClient);
-    if (uri.isEmpty()) {
+    if (uri.isEmpty())
+    {
         d->_q_connect();
         return;
     }
